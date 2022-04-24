@@ -23,7 +23,7 @@ const App = () => {
   useEffect(() => {
     const filteredPlaces = places.filter((place) => place.rating > rating);
     setFilteredPlaces(filteredPlaces);
-  }, [places, rating]);
+  }, [rating]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
