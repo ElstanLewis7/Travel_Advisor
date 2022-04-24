@@ -15,7 +15,7 @@ const Map = ({
   weatherData,
 }) => {
   const classes = useStyles();
-  const isMobile = useMediaQuery('(min-width:600px');
+  const isDesktop = useMediaQuery('(min-width:600px');
 
   return (
     <div className={classes.mapContainer}>
@@ -38,38 +38,39 @@ const Map = ({
           setChildClicked(child);
         }}
       >
-        {places?.map((place, i) => (
-          <div
-            className={classes.markerContainer}
-            lat={Number(place.latitude)}
-            lng={Number(place.longitude)}
-            key={i}
-          >
-            {!isMobile ? (
-              <LocationOnOutlinedIcon color="primary" fontSize="large" />
-            ) : (
-              <Paper elevation={3} className={classes.paper}>
-                <Typography
-                  className={classes.typography}
-                  variant="subtitle2"
-                  gutterBottom
-                >
-                  {place.name}
-                </Typography>
-                <img
-                  className={classes.pointer}
-                  src={
-                    place.photo
-                      ? place.photo.images.large.url
-                      : 'https://images.pexels.com/photos/1307698/pexels-photo-1307698.jpeg?auto=compress&cs=tinysrgb&w=300'
-                  }
-                  alt={place.name}
-                />
-                <Rating size="small" value={Number(place.rating)} readOnly />
-              </Paper>
-            )}
-          </div>
-        ))}
+        {places.length &&
+          places.map((place, i) => (
+            <div
+              className={classes.markerContainer}
+              lat={Number(place.latitude)}
+              lng={Number(place.longitude)}
+              key={i}
+            >
+              {!isDesktop ? (
+                <LocationOnOutlinedIcon color="primary" fontSize="large" />
+              ) : (
+                <Paper elevation={3} className={classes.paper}>
+                  <Typography
+                    className={classes.typography}
+                    variant="subtitle2"
+                    gutterBottom
+                  >
+                    {place.name}
+                  </Typography>
+                  <img
+                    className={classes.pointer}
+                    src={
+                      place.photo
+                        ? place.photo.images.large.url
+                        : 'https://images.pexels.com/photos/1307698/pexels-photo-1307698.jpeg?auto=compress&cs=tinysrgb&w=300'
+                    }
+                    alt={place.name}
+                  />
+                  <Rating size="small" value={Number(place.rating)} readOnly />
+                </Paper>
+              )}
+            </div>
+          ))}
         {weatherData?.list?.map((data, i) => (
           <div key={i} lat={data.coord.lat} lng={data.coord.lon}>
             <img

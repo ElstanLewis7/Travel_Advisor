@@ -7,6 +7,9 @@ import List from './components/List/List';
 import Map from './components/Map/Map';
 
 const App = () => {
+  const [type, setType] = useState('restaurants');
+  const [rating, setRating] = useState('');
+
   const [places, setPlaces] = useState([]);
   const [weatherData, setWeatherData] = useState([]);
 
@@ -16,14 +19,8 @@ const App = () => {
   const [coordinates, setCoordinates] = useState({});
   const [bounds, setBounds] = useState({});
 
+  const [autocomplete, setAutocomplete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [type, setType] = useState('restaurants');
-  const [rating, setRating] = useState('');
-
-  useEffect(() => {
-    const filteredPlaces = places.filter((place) => place.rating > rating);
-    setFilteredPlaces(filteredPlaces);
-  }, [rating]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -31,9 +28,15 @@ const App = () => {
         setCoordinates({ lat: latitude, lng: longitude });
       }
     );
-
-    return () => {};
   }, []);
+
+  useEffect(() => {
+    const filteredPlaces = places.filter(
+      (place) => Number(place.rating) > rating
+    );
+
+    setFilteredPlaces(filteredPlaces);
+  }, [rating]);
 
   useEffect(() => {
     if (bounds.sw && bounds.ne) {
@@ -44,17 +47,27 @@ const App = () => {
       );
 
       getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
-        setPlaces(data?.filter((place) => place.name && place.num_reviews > 0));
+        setPlaces(data.filter((place) => place.name && place.num_reviews > 0));
         setFilteredPlaces([]);
+        setRating('');
         setIsLoading(false);
       });
     }
-  }, [type, bounds]);
+  }, [bounds, type]);
+
+  const onLoad = (autoC) => setAutocomplete(autoC);
+
+  const onPlaceChanged = () => {
+    const lat = autocomplete.getPlace().geometry.location.lat();
+    const lng = autocomplete.getPlace().geometry.location.lng();
+
+    setCoordinates({ lat, lng });
+  };
 
   return (
     <>
       <CssBaseline />
-      <Header setCoordinates={setCoordinates} />
+      <Header onPlaceChanged={onPlaceChanged} onLoad={onLoad} />
       <Grid container spacing={3} style={{ width: '100%' }}>
         <Grid item xs={12} md={4}>
           <List

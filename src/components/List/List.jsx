@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import PlaceDetails from '../PlaceDetails/PlaceDetails';
 
-import useStyles from './styles';
+import useStyles from './styles.js';
 
 const List = ({
   places,
@@ -31,7 +31,7 @@ const List = ({
       .map((_, i) => elRefs[i] || createRef());
 
     setElRefs(refs);
-  }, [places, elRefs]);
+  }, [places]);
 
   return (
     <div className={classes.container}>
@@ -63,7 +63,7 @@ const List = ({
           </FormControl>
           <Grid container spacing={3} className={classes.list}>
             {places?.map((place, i) => (
-              <Grid item key={i} xs={12}>
+              <Grid ref={elRefs[i]} item key={i} xs={12}>
                 <PlaceDetails
                   place={place}
                   selected={Number(childClicked) === i}
